@@ -4,11 +4,13 @@ import br.com.regmoraes.marvelcharacters.infrastructure.CharacterRepository
 
 class FetchCharacters(private val characterRepository: CharacterRepository) {
 
-    private val defaultOffset = 0
-    private val defaultLimit = 20
+    companion object {
+        const val DEFAULT_OFFSET = 0
+        const val DEFAULT_LIMIT = 20
+    }
 
     suspend fun execute(
-        offset: Int = defaultOffset,
-        limit: Int = defaultLimit
+        offset: Int = DEFAULT_OFFSET,
+        limit: Int = DEFAULT_LIMIT
     ): CharacterEvent = characterRepository.getCharacters(offset, limit)
 }

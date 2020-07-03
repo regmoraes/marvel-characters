@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import br.com.regmoraes.marvelcharacters.R
 import br.com.regmoraes.marvelcharacters.application.CharacterEvent
 import br.com.regmoraes.marvelcharacters.application.FavoritesEvent
+import br.com.regmoraes.marvelcharacters.application.FetchCharacters.Companion.DEFAULT_LIMIT
+import br.com.regmoraes.marvelcharacters.application.FetchCharacters.Companion.DEFAULT_OFFSET
 import br.com.regmoraes.marvelcharacters.model.Character
 import br.com.regmoraes.marvelcharacters.presentation.character_detail.CharacterDetailActivity
 import br.com.regmoraes.marvelcharacters.presentation.home.HomeViewModel
@@ -61,7 +63,7 @@ class CharactersFragment : Fragment(), CharacterAdapter.OnClickListener {
             }
         })
 
-        viewModel.fetchCharacters(0, 20)
+        viewModel.fetchCharacters(DEFAULT_OFFSET, DEFAULT_LIMIT)
         viewModel.fetchFavorites()
     }
 
@@ -71,7 +73,8 @@ class CharactersFragment : Fragment(), CharacterAdapter.OnClickListener {
         charactersList.apply {
             layoutManager = GridLayoutManager(context, 2)
             adapter = charactersAdapter
-            addOnScrollListener(object : RecyclerViewPaginator(this) {
+            addOnScrollListener(object :
+                RecyclerViewPagination(layoutManager as GridLayoutManager) {
                 override fun loadMore(offset: Int, limit: Int) {
                     viewModel.fetchCharacters(offset, limit)
                 }
@@ -79,7 +82,7 @@ class CharactersFragment : Fragment(), CharacterAdapter.OnClickListener {
         }
 
         swipeRefresh.setOnRefreshListener {
-            viewModel.fetchCharacters(0, 20)
+            viewModel.fetchCharacters(DEFAULT_OFFSET, DEFAULT_LIMIT)
         }
     }
 

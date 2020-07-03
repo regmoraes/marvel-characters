@@ -4,19 +4,18 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
+import br.com.regmoraes.marvelcharacters.application.FetchCharacters.Companion.DEFAULT_LIMIT
 
-abstract class RecyclerViewPaginator(recyclerView: RecyclerView) : RecyclerView.OnScrollListener() {
-
-    /*
-     * This is the Page Limit for each request
-     * i.e. every request will fetch 19 transactions
-     * */
-    private val limit = 20
+/**
+ * Adapted from https://medium.com/@anitaa_1990/pagination-in-recyclerview-without-paging-library-1c48e9328f81
+ */
+abstract class RecyclerViewPagination(private val layoutManager: RecyclerView.LayoutManager) :
+    RecyclerView.OnScrollListener() {
 
     /*
      * Variable to keep track of the current page
      * */
-    private var currentOffset: Int = limit
+    private var currentOffset: Int = DEFAULT_LIMIT
 
     /*
      * This variable is used to set
@@ -40,12 +39,6 @@ abstract class RecyclerViewPaginator(recyclerView: RecyclerView) : RecyclerView.
     private var endWithAuto = false
 
     /*
-     * We pass the RecyclerView to the constructor
-     * of this class to get the LayoutManager
-     * */
-    private val layoutManager: RecyclerView.LayoutManager?
-
-    /*
      * I have created two abstract methods:
      * isLastPage() where the UI can specify if
      * this is the last page - this data usually comes from the backend.
@@ -60,15 +53,10 @@ abstract class RecyclerViewPaginator(recyclerView: RecyclerView) : RecyclerView.
      * */
     //public abstract boolean isLoading();
 
-    init {
-        recyclerView.addOnScrollListener(this)
-        this.layoutManager = recyclerView.layoutManager
-    }
-
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         super.onScrollStateChanged(recyclerView, newState)
         if (newState == SCROLL_STATE_IDLE) {
-            val visibleItemCount = layoutManager!!.childCount
+            val visibleItemCount = layoutManager.childCount
             val totalItemCount = layoutManager.itemCount
 
             var firstVisibleItemPosition = 0
@@ -82,8 +70,8 @@ abstract class RecyclerViewPaginator(recyclerView: RecyclerView) : RecyclerView.
             if (visibleItemCount + firstVisibleItemPosition + threshold >= totalItemCount) {
                 if (!endWithAuto) {
                     endWithAuto = true
-                    loadMore(currentOffset, limit)
-                    currentOffset += limit
+                    loadMore(currentOffset, DEFAULT_LIMIT)
+                    currentOffset += DEFAULT_LIMIT
                 }
             } else {
                 endWithAuto = false
