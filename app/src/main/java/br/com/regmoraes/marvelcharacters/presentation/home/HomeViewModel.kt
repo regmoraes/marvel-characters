@@ -20,7 +20,8 @@ class HomeViewModel(
     val favoritesEvents: LiveData<FavoritesEvent> = _favoritesEvents
 
     fun fetchCharacters(offset: Int, limit: Int) = viewModelScope.launch {
-        _characterEvents.value = fetchCharacters.execute(offset, limit)
+        _characterEvents.value = CharacterEvent.FetchingCharacters
+        _characterEvents.postValue(fetchCharacters.execute(offset, limit))
     }
 
     fun fetchFavorites() = viewModelScope.launch {

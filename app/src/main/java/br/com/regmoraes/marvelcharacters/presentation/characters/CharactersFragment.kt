@@ -42,11 +42,18 @@ class CharactersFragment : Fragment(), CharacterAdapter.OnClickListener {
 
         viewModel.characterEvents.observe(viewLifecycleOwner, Observer { event ->
             when (event) {
+                is CharacterEvent.FetchingCharacters -> {
+                    swipeRefresh.isRefreshing = true
+                    charactersStatus.visibility = View.GONE
+                }
                 is CharacterEvent.CharactersFetched -> {
-                    charactersAdapter.submitData(
-                        event.characters,
-                        swipeRefresh.isRefreshing
-                    )
+                    charactersAdapter.submitData(event.characters)
+                    swipeRefresh.isRefreshing = false
+                    charactersStatus.visibility = View.GONE
+                }
+                is CharacterEvent.FetchError -> {
+                    charactersStatus.visibility = View.VISIBLE
+                    charactersStatus.text = event.error.message
                     swipeRefresh.isRefreshing = false
                 }
             }
