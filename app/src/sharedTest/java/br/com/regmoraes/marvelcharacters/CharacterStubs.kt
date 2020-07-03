@@ -1,6 +1,7 @@
 package br.com.regmoraes.marvelcharacters
 
 import br.com.regmoraes.marvelcharacters.model.Character
+import br.com.regmoraes.marvelcharacters.model.Comic
 import br.com.regmoraes.marvelcharacters.model.Thumbnail
 
 object CharacterStubs {
@@ -21,5 +22,19 @@ object CharacterStubs {
             name = "Hero Two",
             description = "The number two hero",
             resourceURI = "https://www.api.com/hero-two"
+        )
+
+    val comicOne =
+        Comic(
+            id = 1,
+            thumbnail = Thumbnail(path = "https://www.thumb.com/comic-one", extension = ".jpg"),
+            title = "Comic One"
+        )
+
+    val comicTwo =
+        Comic(
+            id = 2,
+            thumbnail = Thumbnail(path = "https://www.thumb.com/comic-two", extension = ".jpg"),
+            title = "Comic Two"
         )
 }
