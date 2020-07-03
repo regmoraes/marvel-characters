@@ -23,10 +23,12 @@ class CharacterDetailViewModel(
     val characterEvents: LiveData<CharacterEvent> = _characterEvents
 
     fun fetchComics(characterId: Long) = viewModelScope.launch {
+        _characterEvents.value = CharacterEvent.FetchingComics
         _characterEvents.postValue(fetchComics.execute(characterId))
     }
 
     fun fetchSeries(characterId: Long) = viewModelScope.launch {
+        _characterEvents.value = CharacterEvent.FetchingSeries
         _characterEvents.postValue(fetchSeries.execute(characterId))
     }
 

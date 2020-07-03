@@ -3,6 +3,7 @@ package br.com.regmoraes.marvelcharacters.presentation.character_detail
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,13 +52,18 @@ class CharacterDetailActivity : AppCompatActivity() {
 
         viewModel.characterEvents.observe(this, Observer { event ->
             when (event) {
-                is CharacterEvent.ComicsFetched -> comicAdapter.submitData(event.comics)
-            }
-        })
-
-        viewModel.characterEvents.observe(this, Observer { event ->
-            when (event) {
-                is CharacterEvent.SeriesFetched -> seriesAdapter.submitData(event.series)
+                is CharacterEvent.ComicsFetched -> {
+                    comicAdapter.submitData(event.comics)
+                    progressBar.visibility = View.GONE
+                    comicsHeader.visibility = View.VISIBLE
+                    comicsList.visibility = View.VISIBLE
+                }
+                is CharacterEvent.SeriesFetched -> {
+                    seriesAdapter.submitData(event.series)
+                    progressBar.visibility = View.GONE
+                    seriesHeader.visibility = View.VISIBLE
+                    seriesList.visibility = View.VISIBLE
+                }
             }
         })
 
