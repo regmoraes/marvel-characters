@@ -48,16 +48,15 @@ The overall app architecture is as follows
 
 ### Notes
 
-1 - The app is heavily based on application events, so every data sent from bottom to top is via event classes.
-2 - Character model is handled as an aggregate root and because of that, (almost) every repository and use case manipulates Character classes.
-3 - Due to a necessity to sync local database favorites with API characters, there's a dedicated. 
-FavoriteStatusSynchronizer that handles this synchronization in repository level.
-4 - Repository *always* exposes domain models.
-5 - View DTOs were created to make it easier to send data between screens and avoid scoped 
-instances and side-effects  
+1. The app is heavily based on application events, so every domain model from bottom layers is sent to top wrapped in a event class.
+2. Character model is used as an aggregate root and because of that, almost all repositories and use cases manipulates Character classes.
+4. Repository *always* exposes domain models.
+3. Due to a necessity to sync local favorites data with API provided characters, there's a dedicated FavoriteStatusSynchronizer that handles 
+this synchronization in repository level.
+5. View DTOs were created to make it easier to send data between screens and avoid scoped instances and side-effects . 
 
 ## Tests
-Tests (and coding) were made using the Behavior-driven Development approach to ensure the use cases were working as expected.
+Tests were made using the Behavior-driven Development approach to ensure the use cases were working as expected.
 
 :construction: Instrumentation tests 
 
@@ -67,12 +66,24 @@ As good as showing why something was made, it's important to show why something 
 
 **Why not Clean Architecture?**
 
-Even not explicitly using Clean Architecture this project make use of (almost) all *basic* concepts 
-that originated the Clean Architecture with the benefit of not over-engineering the app with 
+Even not explicitly using Clean Architecture this project uses (almost all) *basic* concepts 
+that originated the Clean Architecture, with the benefit of not over-engineering the app with 
 unnecessary elements/layers and mappings. In fact most concepts were extracted from 
-Domain-Driven Design which is also one of the basis Clean Architecture.
+Domain-Driven Design which is also one of the basis of Clean Architecture.
 
-**Why not Data Sources in Repository**
+**Why not mutiple modules?**
+
+Modules are useful when you need to expose/export those module independently as let's say a library. 
+Breaking an app in multiple modules that only works together just generates a "distribute monolith" 
+that is difficult to mantain and navigate. A beter approach is to create a well organized package structure 
+that is dividide into "contexts" that can be exported independently if needed.
+
+**Why not more Interfaces to provide a "better" Dependency Inversion?**
+
+Agressively using Interfaces to provide Dependency Inversion can cause an over-abstraction problem where tracking data flow becomes 
+exhausting. Interfaces should be used wisely and declaring interfaces is not an excuse for better testing since classes can be mocked.
+
+**Why not Data Sources with Repository**
 
 The DAO and RestService interfaces are already a Data Source abstraction so no need create 
 another abstraction on top of them. The Repository Mediator is responsible to manage their 
