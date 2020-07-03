@@ -33,4 +33,18 @@ object ModelStubs {
             thumbnail = Thumbnail(path = "https://www.thumb.com/comic-two", extension = ".jpg"),
             title = "Comic Two"
         )
+
+    val seriesOne =
+        Series(
+            id = 1,
+            thumbnail = Thumbnail(path = "https://www.thumb.com/series-one", extension = ".jpg"),
+            title = "Series One"
+        )
+
+    val seriesTwo =
+        Series(
+            id = 2,
+            thumbnail = Thumbnail(path = "https://www.thumb.com/series-two", extension = ".jpg"),
+            title = "Series Two"
+        )
 }
