@@ -1,10 +1,10 @@
 package br.com.regmoraes.marvelcharacters.application
 
-import br.com.regmoraes.marvelcharacters.CharacterStubs.characterOne
-import br.com.regmoraes.marvelcharacters.CharacterStubs.characterTwo
 import br.com.regmoraes.marvelcharacters.application.FetchCharacters.Companion.DEFAULT_LIMIT
 import br.com.regmoraes.marvelcharacters.application.FetchCharacters.Companion.DEFAULT_OFFSET
 import br.com.regmoraes.marvelcharacters.infrastructure.CharacterRepository
+import br.com.regmoraes.marvelcharacters.model.ModelStubs.characterOne
+import br.com.regmoraes.marvelcharacters.model.ModelStubs.characterTwo
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking

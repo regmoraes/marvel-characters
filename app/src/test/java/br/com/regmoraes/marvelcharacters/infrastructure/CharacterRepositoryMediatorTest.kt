@@ -1,7 +1,5 @@
 package br.com.regmoraes.marvelcharacters.infrastructure
 
-import br.com.regmoraes.marvelcharacters.CharacterStubs.characterOne
-import br.com.regmoraes.marvelcharacters.CharacterStubs.characterTwo
 import br.com.regmoraes.marvelcharacters.FileUtils
 import br.com.regmoraes.marvelcharacters.application.CharacterEvent
 import br.com.regmoraes.marvelcharacters.application.FavoritesEvent
@@ -9,6 +7,8 @@ import br.com.regmoraes.marvelcharacters.infrastructure.api.CharacterRestService
 import br.com.regmoraes.marvelcharacters.infrastructure.api.RetrofitConfiguration
 import br.com.regmoraes.marvelcharacters.infrastructure.database.CharacterDao
 import br.com.regmoraes.marvelcharacters.infrastructure.database.toEntity
+import br.com.regmoraes.marvelcharacters.model.ModelStubs.characterOne
+import br.com.regmoraes.marvelcharacters.model.ModelStubs.characterTwo
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.collect

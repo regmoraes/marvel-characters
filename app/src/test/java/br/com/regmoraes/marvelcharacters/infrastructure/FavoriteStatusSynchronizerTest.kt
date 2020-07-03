@@ -1,7 +1,7 @@
 package br.com.regmoraes.marvelcharacters.infrastructure
 
-import br.com.regmoraes.marvelcharacters.CharacterStubs.characterOne
-import br.com.regmoraes.marvelcharacters.CharacterStubs.characterTwo
+import br.com.regmoraes.marvelcharacters.model.ModelStubs.characterOne
+import br.com.regmoraes.marvelcharacters.model.ModelStubs.characterTwo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested

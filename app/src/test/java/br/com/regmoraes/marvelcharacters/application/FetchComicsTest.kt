@@ -1,9 +1,9 @@
 package br.com.regmoraes.marvelcharacters.application
 
-import br.com.regmoraes.marvelcharacters.CharacterStubs.characterOne
-import br.com.regmoraes.marvelcharacters.CharacterStubs.comicOne
-import br.com.regmoraes.marvelcharacters.CharacterStubs.comicTwo
 import br.com.regmoraes.marvelcharacters.infrastructure.CharacterRepository
+import br.com.regmoraes.marvelcharacters.model.ModelStubs.characterOne
+import br.com.regmoraes.marvelcharacters.model.ModelStubs.comicOne
+import br.com.regmoraes.marvelcharacters.model.ModelStubs.comicTwo
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking

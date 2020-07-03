@@ -1,10 +1,6 @@
-package br.com.regmoraes.marvelcharacters
+package br.com.regmoraes.marvelcharacters.model
 
-import br.com.regmoraes.marvelcharacters.model.Character
-import br.com.regmoraes.marvelcharacters.model.Comic
-import br.com.regmoraes.marvelcharacters.model.Thumbnail
-
-object CharacterStubs {
+object ModelStubs {
 
     val characterOne =
         Character(
