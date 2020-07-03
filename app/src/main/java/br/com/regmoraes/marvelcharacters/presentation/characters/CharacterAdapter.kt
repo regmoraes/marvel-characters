@@ -15,7 +15,6 @@ class CharacterAdapter(private val listener: OnClickListener) :
     RecyclerView.Adapter<CharacterAdapter.CharacterViewHolder>(), Filterable {
 
     private val charactersMap = mutableMapOf<Long, Character>()
-    private val character = mutableListOf<Character>()
     private val charactersFilter by lazy { CharacterFilter() }
     private var filteredCharacters: List<Character> = charactersMap.values.toList()
 
@@ -73,7 +72,7 @@ class CharacterAdapter(private val listener: OnClickListener) :
         override fun performFiltering(constraint: CharSequence): FilterResults {
 
             val filteredCharacters = if (constraint.isBlank()) {
-                charactersMap.values
+                charactersMap.values.toList()
             } else {
                 charactersMap.values.filter {
                     it.name.contains(
@@ -92,12 +91,10 @@ class CharacterAdapter(private val listener: OnClickListener) :
             constraint: CharSequence,
             results: FilterResults
         ) {
-            filteredCharacters =
-                results.values as List<Character>
+            filteredCharacters = results.values as List<Character>
             notifyDataSetChanged()
         }
     }
-
 
     interface OnClickListener {
         fun onFavoriteClicked(character: Character)
