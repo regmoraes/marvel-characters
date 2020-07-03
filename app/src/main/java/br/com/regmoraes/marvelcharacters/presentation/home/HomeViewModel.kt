@@ -3,9 +3,7 @@ package br.com.regmoraes.marvelcharacters.presentation.home
 import androidx.lifecycle.*
 import br.com.regmoraes.marvelcharacters.application.*
 import br.com.regmoraes.marvelcharacters.model.Character
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeViewModel(
     private val changeFavoriteStatus: ChangeFavoriteStatus,
@@ -31,8 +29,6 @@ class HomeViewModel(
     }
 
     fun changeFavoriteStatus(character: Character) = viewModelScope.launch {
-        withContext(Dispatchers.IO) {
-            _favoritesEvents.postValue(changeFavoriteStatus.execute(character))
-        }
+        _favoritesEvents.postValue(changeFavoriteStatus.execute(character))
     }
 }

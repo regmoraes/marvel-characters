@@ -1,6 +1,5 @@
 package br.com.regmoraes.marvelcharacters.infrastructure
 
-import br.com.regmoraes.marvelcharacters.FileUtils
 import br.com.regmoraes.marvelcharacters.application.CharacterEvent
 import br.com.regmoraes.marvelcharacters.application.FavoritesEvent
 import br.com.regmoraes.marvelcharacters.infrastructure.api.CharacterRestService
@@ -9,6 +8,7 @@ import br.com.regmoraes.marvelcharacters.infrastructure.database.CharacterDao
 import br.com.regmoraes.marvelcharacters.infrastructure.database.toEntity
 import br.com.regmoraes.marvelcharacters.model.ModelStubs.characterOne
 import br.com.regmoraes.marvelcharacters.model.ModelStubs.characterTwo
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.collect
@@ -156,7 +156,7 @@ class CharacterRepositoryMediatorTest {
         fun `When insert returns new entity id Then it should return favorite added`() =
             runBlocking {
 
-                every { characterDao.insertAsFavorite(eq(characterOne.toEntity())) } returns characterOne.id
+                coEvery { characterDao.insertAsFavorite(eq(characterOne.toEntity())) } returns characterOne.id
 
                 val event = characterRepositoryMediator.insertFavorite(characterOne)
 
@@ -167,7 +167,7 @@ class CharacterRepositoryMediatorTest {
         @Throws(Exception::class)
         fun `When insert do not return new id Then it should return an error`() = runBlocking {
 
-            every { characterDao.insertAsFavorite(eq(characterOne.toEntity())) } returns -1L
+            coEvery { characterDao.insertAsFavorite(eq(characterOne.toEntity())) } returns -1L
 
             val event = characterRepositoryMediator.insertFavorite(characterOne)
 
@@ -198,7 +198,7 @@ class CharacterRepositoryMediatorTest {
         @Throws(Exception::class)
         fun `When removing a favorite Then it should return favorite removed`() = runBlocking {
 
-            every { characterDao.removeFavorite(characterOne.id) } returns 1
+            coEvery { characterDao.removeFavorite(characterOne.id) } returns 1
 
             val event = characterRepositoryMediator.removeFavorite(characterOne)
 

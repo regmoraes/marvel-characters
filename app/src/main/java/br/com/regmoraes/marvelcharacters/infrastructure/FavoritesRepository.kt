@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface FavoritesRepository {
 
-    fun getFavorites(): Flow<FavoritesEvent.FavoritesFetched>
+    suspend fun getFavorites(): Flow<FavoritesEvent.FavoritesFetched>
 
-    fun insertFavorite(character: Character): FavoritesEvent
+    suspend fun insertFavorite(character: Character): FavoritesEvent
 
-    fun removeFavorite(character: Character): FavoritesEvent
+    suspend fun removeFavorite(character: Character): FavoritesEvent
 }

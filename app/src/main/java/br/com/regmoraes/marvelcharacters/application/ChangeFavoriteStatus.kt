@@ -7,7 +7,7 @@ import br.com.regmoraes.marvelcharacters.model.changeFavoriteStatus
 
 class ChangeFavoriteStatus(private val characterRepository: CharacterRepository) {
 
-    fun execute(character: Character): FavoritesEvent {
+    suspend fun execute(character: Character): FavoritesEvent {
 
         val changedCharacter = character.changeFavoriteStatus()
 

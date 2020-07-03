@@ -12,12 +12,9 @@ interface CharacterDao {
     @Query("SELECT * FROM characters")
     fun getAllFavorites(): Flow<List<CharacterEntity>>
 
-    @Query("SELECT * FROM characters WHERE id == :id")
-    fun getAllFavorites(id: Int): Flow<List<CharacterEntity>>
-
     @Insert(onConflict = IGNORE)
-    fun insertAsFavorite(characterEntity: CharacterEntity): Long
+    suspend fun insertAsFavorite(characterEntity: CharacterEntity): Long
 
     @Query("DELETE FROM characters WHERE id == :characterId")
-    fun removeFavorite(characterId: Long): Int
+    suspend fun removeFavorite(characterId: Long): Int
 }

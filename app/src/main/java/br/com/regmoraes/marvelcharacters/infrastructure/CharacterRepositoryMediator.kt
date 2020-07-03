@@ -72,7 +72,7 @@ class CharacterRepositoryMediator(
         }
     }
 
-    override fun insertFavorite(character: Character): FavoritesEvent {
+    override suspend fun insertFavorite(character: Character): FavoritesEvent {
         val addedEntityId = characterDao.insertAsFavorite(character.toEntity())
         return if (addedEntityId != -1L) {
             FavoritesEvent.FavoriteAdded(character)
@@ -81,13 +81,13 @@ class CharacterRepositoryMediator(
         }
     }
 
-    override fun getFavorites(): Flow<FavoritesEvent.FavoritesFetched> {
+    override suspend fun getFavorites(): Flow<FavoritesEvent.FavoritesFetched> {
         return characterDao.getAllFavorites()
             .map { charactersEntity -> FavoritesEvent.FavoritesFetched(charactersEntity.map { it.toCharacter() }) }
             .onEach { favoriteStatusSynchronizer.setSourceFavorites(it.favorites) }
     }
 
-    override fun removeFavorite(character: Character): FavoritesEvent {
+    override suspend fun removeFavorite(character: Character): FavoritesEvent {
         val removedEntityId = characterDao.removeFavorite(character.id)
         return if (removedEntityId > 0) {
             FavoritesEvent.FavoriteRemoved(character)
