@@ -41,7 +41,13 @@ class FavoritesFragment : Fragment() {
 
         viewModel.favoritesEvents.observe(viewLifecycleOwner, Observer { event ->
             when (event) {
-                is FavoritesEvent.FavoritesFetched -> favoriteAdapter.submitData(event.favorites)
+                is FavoritesEvent.FavoritesFetched -> {
+                    favoritesStatus.text = getString(R.string.empty_favorites)
+                    favoritesStatus.visibility =
+                        if (event.favorites.isEmpty()) View.VISIBLE else View.GONE
+
+                    favoriteAdapter.submitData(event.favorites)
+                }
             }
         })
     }
