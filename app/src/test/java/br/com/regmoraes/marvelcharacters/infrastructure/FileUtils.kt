@@ -1,4 +1,4 @@
-package br.com.regmoraes.marvelcharacters
+package br.com.regmoraes.marvelcharacters.infrastructure
 
 object FileUtils {
     fun readTestResourceFile(fileName: String): String {
