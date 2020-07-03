@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Marvel Characters</string>
+    <string name="title_activity_home">@string/app_name</string>
+    <string name="characters_fragment_label">Characters</string>
+    <string name="favorites_fragment_label">Favorites</string>
+    <string name="comics">Comics</string>
+    <string name="series">Series</string>
+    <string name="empty_favorites">You have no favorites</string>
+    <string name="search">Search</string>
 </resources>
