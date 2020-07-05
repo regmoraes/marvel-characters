@@ -21,7 +21,8 @@ fun CharacterEntity.toCharacter(): Character {
         Thumbnail(thumbnailPath, thumbnailExtension),
         name,
         description,
-        resourceURI
+        resourceURI,
+        isFavorite = true
     )
 }
 
