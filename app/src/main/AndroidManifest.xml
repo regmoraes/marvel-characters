@@ -14,14 +14,17 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".presentation.home.HomeActivity"
-            android:label="@string/title_activity_home">
+            android:label="@string/title_activity_home"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.character_detail.CharacterDetailActivity" />
+        <activity
+            android:name=".presentation.character_detail.CharacterDetailActivity"
+            android:parentActivityName=".presentation.home.HomeActivity" />
     </application>
 
 </manifest>

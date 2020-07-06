@@ -1,3 +1,14 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_elevation">6dp</dimen>
+    <dimen name="fab_press_translation_z">12dp</dimen>
+    <dimen name="fab_size">56dp</dimen>
+
+    <dimen name="default_horizontal_margin">16dp</dimen>
+    <dimen name="default_horizontal_padding">16dp</dimen>
+    <dimen name="default_vertical_margin">8dp</dimen>
+
+    <dimen name="comics_thumbnail_width">152dp</dimen>
+    <dimen name="comics_thumbnail_height">202dp</dimen>
+    <dimen name="comics_title_size">16sp</dimen>
 </resources>

@@ -1,9 +1,8 @@
 package br.com.regmoraes.marvelcharacters.presentation.characters
 
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import br.com.regmoraes.marvelcharacters.application.FetchCharacters.Companion.DEFAULT_LIMIT
 
 /**
@@ -60,11 +59,8 @@ abstract class RecyclerViewPagination(private val layoutManager: RecyclerView.La
             val totalItemCount = layoutManager.itemCount
 
             var firstVisibleItemPosition = 0
-            if (layoutManager is LinearLayoutManager) {
-                firstVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
-
-            } else if (layoutManager is GridLayoutManager) {
-                firstVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+            if (layoutManager is StaggeredGridLayoutManager) {
+                firstVisibleItemPosition = layoutManager.findLastVisibleItemPositions(null).first()
             }
 
             if (visibleItemCount + firstVisibleItemPosition + threshold >= totalItemCount) {

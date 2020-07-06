@@ -6,7 +6,8 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import br.com.regmoraes.marvelcharacters.R
 import br.com.regmoraes.marvelcharacters.application.CharacterEvent
 import br.com.regmoraes.marvelcharacters.application.FavoritesEvent
@@ -78,10 +79,10 @@ class CharactersFragment : Fragment(), CharacterAdapter.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         charactersList.apply {
-            layoutManager = GridLayoutManager(context, 2)
+            layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
             adapter = charactersAdapter
             addOnScrollListener(object :
-                RecyclerViewPagination(layoutManager as GridLayoutManager) {
+                RecyclerViewPagination(layoutManager as StaggeredGridLayoutManager) {
                 override fun loadMore(offset: Int, limit: Int) {
                     viewModel.fetchCharacters(offset, limit)
                 }

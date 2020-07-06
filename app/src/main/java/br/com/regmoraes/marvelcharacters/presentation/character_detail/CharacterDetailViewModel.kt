@@ -34,7 +34,7 @@ class CharacterDetailViewModel(
 
     fun changeFavoriteStatus(character: Character) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            _favoritesEvents.value = changeFavoriteStatus.execute(character)
+            _favoritesEvents.postValue(changeFavoriteStatus.execute(character))
         }
     }
 }

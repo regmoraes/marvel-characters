@@ -14,22 +14,29 @@ import br.com.regmoraes.marvelcharacters.application.FavoritesEvent
 import br.com.regmoraes.marvelcharacters.presentation.model.CharacterParcel
 import br.com.regmoraes.marvelcharacters.presentation.model.toDomain
 import br.com.regmoraes.marvelcharacters.presentation.model.toParcel
+import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_character_detail.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+
 class CharacterDetailActivity : AppCompatActivity() {
 
     private lateinit var character: CharacterParcel
+    private var menu: Menu? = null
     private val viewModel by viewModel<CharacterDetailViewModel>()
     private val comicAdapter = ComicsAdapter()
     private val seriesAdapter = SeriesAdapter()
+
+    private var scrollRange = -1
+    private var favoriteActionIsShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_character_detail)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (intent.hasExtra(CharacterParcel::class.java.simpleName)) {
             character = intent.getParcelableExtra(CharacterParcel::class.java.simpleName)!!
@@ -40,6 +47,21 @@ class CharacterDetailActivity : AppCompatActivity() {
 
         seriesList.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         seriesList.adapter = seriesAdapter
+
+        appBarLayout.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (scrollRange == -1) {
+                scrollRange = appBarLayout.totalScrollRange
+            }
+            if (scrollRange + verticalOffset == 0) {
+                showFavoriteAction()
+            } else if (favoriteActionIsShown) {
+                hideFavoriteAction()
+            }
+        })
+
+        favorite_fab.setOnClickListener {
+            viewModel.changeFavoriteStatus(character.toDomain())
+        }
 
         showCharacterDetails()
 
@@ -53,16 +75,28 @@ class CharacterDetailActivity : AppCompatActivity() {
         viewModel.characterEvents.observe(this, Observer { event ->
             when (event) {
                 is CharacterEvent.ComicsFetched -> {
-                    comicAdapter.submitData(event.comics)
-                    progressBar.visibility = View.GONE
-                    comicsHeader.visibility = View.VISIBLE
-                    comicsList.visibility = View.VISIBLE
+                    event.comics.apply {
+                        comicAdapter.submitData(this)
+                        if (isEmpty()) {
+                            comicsHeader.visibility = View.GONE
+                        } else {
+                            comicsHeader.visibility = View.VISIBLE
+                        }
+                        progressBar.visibility = View.GONE
+                        comicsList.visibility = View.VISIBLE
+                    }
                 }
                 is CharacterEvent.SeriesFetched -> {
-                    seriesAdapter.submitData(event.series)
-                    progressBar.visibility = View.GONE
-                    seriesHeader.visibility = View.VISIBLE
-                    seriesList.visibility = View.VISIBLE
+                    event.series.apply {
+                        seriesAdapter.submitData(this)
+                        if (isEmpty()) {
+                            seriesHeader.visibility = View.GONE
+                        } else {
+                            seriesHeader.visibility = View.VISIBLE
+                        }
+                        progressBar.visibility = View.GONE
+                        seriesList.visibility = View.VISIBLE
+                    }
                 }
             }
         })
@@ -72,7 +106,8 @@ class CharacterDetailActivity : AppCompatActivity() {
                 is FavoritesEvent.FavoriteAdded -> character = event.addedCharacter.toParcel()
                 is FavoritesEvent.FavoriteRemoved -> character = event.removedCharacter.toParcel()
             }
-            invalidateOptionsMenu()
+
+            showFavoriteStatus()
         })
     }
 
@@ -82,27 +117,53 @@ class CharacterDetailActivity : AppCompatActivity() {
         Picasso.get().load(character.thumbnail.pathWithExtension)
             .into(characterImageView)
 
-        descriptionTextView.text = character.description
+        character.description.apply {
+            if (isBlank())
+                descriptionTextView.visibility = View.GONE
+            else
+                descriptionTextView.text = this
+        }
+
+        showFavoriteStatus()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    private fun showFavoriteStatus() {
+        val favoriteIcon = if (character.isFavorite)
+            R.drawable.ic_baseline_star_24
+        else
+            R.drawable.ic_baseline_star_border_24
+
+        favorite_fab.setImageDrawable(getDrawable(favoriteIcon))
+        menu?.findItem(R.id.action_favorite)?.setIcon(favoriteIcon)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_character_detail, menu)
+        this.menu = menu
+        hideFavoriteAction()
         return true
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        if (character.isFavorite) {
-            menu?.findItem(R.id.action_favorite)?.setIcon(R.drawable.ic_baseline_star_24)
-        }
+        showFavoriteStatus()
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.action_favorite -> {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (item.itemId == R.id.action_favorite) {
             viewModel.changeFavoriteStatus(character.toDomain())
-            true
-        }
+            return true
+        } else
+            false
+    }
 
-        else -> super.onOptionsItemSelected(item)
+    private fun hideFavoriteAction() {
+        favoriteActionIsShown = false
+        menu?.findItem(R.id.action_favorite)?.isVisible = favoriteActionIsShown
+    }
+
+    private fun showFavoriteAction() {
+        favoriteActionIsShown = true
+        menu?.findItem(R.id.action_favorite)?.isVisible = favoriteActionIsShown
     }
 }

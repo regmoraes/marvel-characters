@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import br.com.regmoraes.marvelcharacters.R
 import br.com.regmoraes.marvelcharacters.model.Character
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.character_adapter.view.*
+import kotlinx.android.synthetic.main.adapter_character.view.*
 
 class FavoriteAdapter(private val listener: OnClickListener) :
     RecyclerView.Adapter<FavoriteAdapter.CharacterViewHolder>() {
@@ -21,7 +21,7 @@ class FavoriteAdapter(private val listener: OnClickListener) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.favorite_adapter, parent, false)
+        val view = layoutInflater.inflate(R.layout.adapter_favorite, parent, false)
         return CharacterViewHolder(view)
     }
 
@@ -38,14 +38,14 @@ class FavoriteAdapter(private val listener: OnClickListener) :
     override fun getItemCount(): Int = favorites.size
 
     interface OnClickListener {
-        fun onFavoriteClicked(character: Character)
+        fun onCharacterClicked(character: Character)
     }
 
     inner class CharacterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         init {
-            view.favoriteImageView.setOnClickListener {
+            view.setOnClickListener {
                 favorites[bindingAdapterPosition].apply {
-                    listener.onFavoriteClicked(this)
+                    listener.onCharacterClicked(this)
                 }
             }
         }

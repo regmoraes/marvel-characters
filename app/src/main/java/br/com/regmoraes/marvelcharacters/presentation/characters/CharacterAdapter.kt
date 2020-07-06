@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import br.com.regmoraes.marvelcharacters.R
 import br.com.regmoraes.marvelcharacters.model.Character
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.character_adapter.view.*
+import kotlinx.android.synthetic.main.adapter_character.view.*
 
 class CharacterAdapter(private val listener: OnClickListener) :
     RecyclerView.Adapter<CharacterAdapter.CharacterViewHolder>(), Filterable {
@@ -20,7 +20,7 @@ class CharacterAdapter(private val listener: OnClickListener) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.character_adapter, parent, false)
+        val view = layoutInflater.inflate(R.layout.adapter_character, parent, false)
         return CharacterViewHolder(view)
     }
 
