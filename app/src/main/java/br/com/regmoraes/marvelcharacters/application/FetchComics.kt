@@ -1,9 +1,8 @@
 package br.com.regmoraes.marvelcharacters.application
 
-import br.com.regmoraes.marvelcharacters.infrastructure.CharacterRepository
+import br.com.regmoraes.marvelcharacters.infrastructure.ComicRepository
 
-class FetchComics(private val characterRepository: CharacterRepository) {
+class FetchComics(private val comicRepository: ComicRepository) {
 
-    suspend fun execute(characterId: Long): CharacterEvent =
-        characterRepository.getComics(characterId)
+    fun execute(characterId: Long) = comicRepository.getComics(characterId)
 }

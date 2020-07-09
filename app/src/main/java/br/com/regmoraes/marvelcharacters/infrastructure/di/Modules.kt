@@ -1,39 +1,52 @@
 package br.com.regmoraes.marvelcharacters.infrastructure.di
 
 import br.com.regmoraes.marvelcharacters.application.*
-import br.com.regmoraes.marvelcharacters.infrastructure.CharacterRepository
-import br.com.regmoraes.marvelcharacters.infrastructure.CharacterRepositoryMediator
-import br.com.regmoraes.marvelcharacters.infrastructure.FavoriteStatusSynchronizer
+import br.com.regmoraes.marvelcharacters.infrastructure.*
 import br.com.regmoraes.marvelcharacters.infrastructure.api.CharacterRestService
 import br.com.regmoraes.marvelcharacters.infrastructure.api.RetrofitConfiguration
 import br.com.regmoraes.marvelcharacters.infrastructure.api.RetrofitConfiguration.BASE_URL
 import br.com.regmoraes.marvelcharacters.infrastructure.database.MarvelCharactersDatabase
-import br.com.regmoraes.marvelcharacters.presentation.character_detail.CharacterDetailViewModel
-import br.com.regmoraes.marvelcharacters.presentation.home.HomeViewModel
+import br.com.regmoraes.marvelcharacters.presentation.CoroutineContextProvider
+import br.com.regmoraes.marvelcharacters.presentation.character_detail.ComicsViewModel
+import br.com.regmoraes.marvelcharacters.presentation.character_detail.SeriesViewModel
+import br.com.regmoraes.marvelcharacters.presentation.characters.CharactersViewModel
+import br.com.regmoraes.marvelcharacters.presentation.favorites.FavoritesViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val applicationModule = module {
     single { FetchCharacters(get()) }
     single { FetchComics(get()) }
+    single { SaveComics(get()) }
     single { FetchSeries(get()) }
+    single { SaveSeries(get()) }
     single { FetchFavorites(get()) }
-    single { ChangeFavoriteStatus(get()) }
+    single { AddToFavorite(get()) }
+    single { RemoveFromFavorite(get()) }
+    single { FetchAndSaveComicsAndSeries(get(), get(), get(), get()) }
 }
 
 val presentationModule = module {
+    viewModel { CharactersViewModel(get()) }
     viewModel {
-        HomeViewModel(
+        FavoritesViewModel(
             get(),
             get(),
-            get()
+            get(),
+            get(),
+            get(),
+            get(),
+            CoroutineContextProvider()
         )
     }
-    viewModel { CharacterDetailViewModel(get(), get(), get()) }
+    viewModel { SeriesViewModel(get()) }
+    viewModel { ComicsViewModel(get()) }
 }
 
 val databaseModule = module {
     single { MarvelCharactersDatabase.getDatabase(get()).characterDao() }
+    single { MarvelCharactersDatabase.getDatabase(get()).comicsDao() }
+    single { MarvelCharactersDatabase.getDatabase(get()).seriesDao() }
 }
 
 val networkModule = module {
@@ -45,4 +58,6 @@ val networkModule = module {
 val infrastructureModule = module {
     single { FavoriteStatusSynchronizer() }
     single<CharacterRepository> { CharacterRepositoryMediator(get(), get(), get()) }
+    single<SeriesRepository> { SeriesRepositoryMediator(get(), get()) }
+    single<ComicRepository> { ComicRepositoryMediator(get(), get()) }
 }

@@ -5,7 +5,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import br.com.regmoraes.marvelcharacters.presentation.characters.CharactersFragment
 import br.com.regmoraes.marvelcharacters.presentation.favorites.FavoritesFragment
 
-class HomeFragmentsAdapter(activity: HomeActivity) : FragmentStateAdapter(activity) {
+class HomeFragmentsAdapter(fragment: HomeFragment) : FragmentStateAdapter(fragment) {
 
     override fun getItemCount(): Int = 2
 

@@ -13,8 +13,8 @@ interface CharacterDao {
     fun getAllFavorites(): Flow<List<CharacterEntity>>
 
     @Insert(onConflict = IGNORE)
-    suspend fun insertAsFavorite(characterEntity: CharacterEntity): Long
+    fun insertAsFavorite(characterEntity: CharacterEntity): Long
 
     @Query("DELETE FROM characters WHERE id == :characterId")
-    suspend fun removeFavorite(characterId: Long): Int
+    fun removeFavorite(characterId: Long): Int
 }

@@ -1,14 +1,14 @@
 package br.com.regmoraes.marvelcharacters.infrastructure
 
-import br.com.regmoraes.marvelcharacters.application.FavoritesEvent
+import br.com.regmoraes.marvelcharacters.application.Event
 import br.com.regmoraes.marvelcharacters.model.Character
 import kotlinx.coroutines.flow.Flow
 
 interface FavoritesRepository {
 
-    suspend fun getFavorites(): Flow<FavoritesEvent.FavoritesFetched>
+    fun getFavorites(): Flow<Event<List<Character>>>
 
-    suspend fun insertFavorite(character: Character): FavoritesEvent
+    fun insertFavorite(character: Character): Event<Boolean>
 
-    suspend fun removeFavorite(character: Character): FavoritesEvent
+    fun removeFavorite(character: Character): Event<Boolean>
 }

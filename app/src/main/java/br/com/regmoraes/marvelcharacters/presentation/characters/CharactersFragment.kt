@@ -1,25 +1,25 @@
 package br.com.regmoraes.marvelcharacters.presentation.characters
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import br.com.regmoraes.marvelcharacters.R
-import br.com.regmoraes.marvelcharacters.application.CharacterEvent
-import br.com.regmoraes.marvelcharacters.application.FavoritesEvent
 import br.com.regmoraes.marvelcharacters.application.FetchCharacters.Companion.DEFAULT_LIMIT
 import br.com.regmoraes.marvelcharacters.application.FetchCharacters.Companion.DEFAULT_OFFSET
 import br.com.regmoraes.marvelcharacters.model.Character
-import br.com.regmoraes.marvelcharacters.presentation.character_detail.CharacterDetailActivity
-import br.com.regmoraes.marvelcharacters.presentation.home.HomeViewModel
-import br.com.regmoraes.marvelcharacters.presentation.model.CharacterParcel
+import br.com.regmoraes.marvelcharacters.presentation.favorites.FavoritesViewModel
+import br.com.regmoraes.marvelcharacters.presentation.home.HomeFragmentDirections
 import br.com.regmoraes.marvelcharacters.presentation.model.toParcel
+import kotlinx.android.synthetic.main.adapter_character.*
 import kotlinx.android.synthetic.main.fragment_characters.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 /**
@@ -27,7 +27,9 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  */
 class CharactersFragment : Fragment(), CharacterAdapter.OnClickListener {
 
-    private val viewModel by sharedViewModel<HomeViewModel>()
+    private val favoritesViewModel by sharedViewModel<FavoritesViewModel>()
+    private val charactersViewModel by viewModel<CharactersViewModel>()
+
     private var charactersAdapter = CharacterAdapter(this)
 
     override fun onCreateView(
@@ -38,45 +40,36 @@ class CharactersFragment : Fragment(), CharacterAdapter.OnClickListener {
         return inflater.inflate(R.layout.fragment_characters, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        viewModel.characterEvents.observe(viewLifecycleOwner, Observer { event ->
-            when (event) {
-                is CharacterEvent.FetchingCharacters -> {
-                    swipeRefresh.isRefreshing = true
-                    charactersStatus.visibility = View.GONE
-                }
-                is CharacterEvent.CharactersFetched -> {
-                    charactersAdapter.submitData(event.characters)
-                    swipeRefresh.isRefreshing = false
-                    charactersStatus.visibility = View.GONE
-                }
-                is CharacterEvent.FetchError -> {
-                    charactersStatus.visibility = View.VISIBLE
-                    charactersStatus.text = event.error.message
-                    swipeRefresh.isRefreshing = false
-                }
-            }
-        })
-
-        viewModel.favoritesEvents.observe(viewLifecycleOwner, Observer { event ->
-            when (event) {
-                is FavoritesEvent.FavoriteAdded -> {
-                    charactersAdapter.updateFavoriteStatus(event.addedCharacter)
-                }
-                is FavoritesEvent.FavoriteRemoved -> {
-                    charactersAdapter.updateFavoriteStatus(event.removedCharacter)
-                }
-            }
-        })
-
-        viewModel.fetchCharacters(DEFAULT_OFFSET, DEFAULT_LIMIT)
-        viewModel.fetchFavorites()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        charactersViewModel.charactersState.observe(
+            parentFragment?.viewLifecycleOwner ?: viewLifecycleOwner, Observer { state ->
+
+                swipeRefresh.isRefreshing = state.fetching
+
+                if (!state.characters.isNullOrEmpty()) {
+                    charactersAdapter.submitData(state.characters)
+                }
+
+                if (state.networkError) {
+                    charactersStatus.visibility = View.VISIBLE
+                    charactersStatus.text = getString(R.string.generic_network_error)
+                    charactersList.visibility = View.INVISIBLE
+                } else {
+                    charactersStatus.visibility = View.GONE
+                    charactersList.visibility = View.VISIBLE
+                }
+            })
+
+        favoritesViewModel.favoriteStatusChanged.observe(
+            parentFragment?.viewLifecycleOwner ?: viewLifecycleOwner, Observer { state ->
+                charactersAdapter.updateFavoriteStatus(state.character)
+            })
+
+        swipeRefresh.setOnRefreshListener {
+            charactersViewModel.fetchCharacters(DEFAULT_OFFSET, DEFAULT_LIMIT)
+        }
 
         charactersList.apply {
             layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
@@ -84,13 +77,9 @@ class CharactersFragment : Fragment(), CharacterAdapter.OnClickListener {
             addOnScrollListener(object :
                 RecyclerViewPagination(layoutManager as StaggeredGridLayoutManager) {
                 override fun loadMore(offset: Int, limit: Int) {
-                    viewModel.fetchCharacters(offset, limit)
+                    charactersViewModel.fetchCharacters(offset, limit)
                 }
             })
-        }
-
-        swipeRefresh.setOnRefreshListener {
-            viewModel.fetchCharacters(DEFAULT_OFFSET, DEFAULT_LIMIT)
         }
     }
 
@@ -111,15 +100,16 @@ class CharactersFragment : Fragment(), CharacterAdapter.OnClickListener {
     }
 
     override fun onFavoriteClicked(character: Character) {
-        viewModel.changeFavoriteStatus(character)
+        if (character.isFavorite)
+            favoritesViewModel.removeFromFavorite(character)
+        else
+            favoritesViewModel.addToFavorite(character)
     }
 
     override fun onCharacterClicked(character: Character) {
-        val intent = Intent(
-            activity,
-            CharacterDetailActivity::class.java
-        ).putExtra(CharacterParcel::class.simpleName, character.toParcel())
-
-        startActivity(intent)
+        val extras =
+            FragmentNavigatorExtras(characterImageView to getString(R.string.character_image_transition))
+        val action = HomeFragmentDirections.actionHomeToCharacterDetails(character.toParcel())
+        findNavController().navigate(action, extras)
     }
 }

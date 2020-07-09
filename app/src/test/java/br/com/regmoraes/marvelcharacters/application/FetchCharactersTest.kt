@@ -9,7 +9,6 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.assertTrue
 import kotlin.test.assertFailsWith
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -37,13 +36,11 @@ internal class FetchCharactersTest {
                     any(),
                     any()
                 )
-            } returns CharacterEvent.CharactersFetched(characters)
+            } returns Event.success(characters)
 
             val event = fetchCharacters.execute()
 
-            assertTrue(
-                event is CharacterEvent.CharactersFetched && event.characters == characters
-            )
+            assert(event is Event.Success && event.data == characters)
         }
 
         @Test
@@ -54,11 +51,11 @@ internal class FetchCharactersTest {
                     any(),
                     any()
                 )
-            } returns CharacterEvent.FetchError(IllegalStateException("An error"))
+            } returns Event.error(IllegalStateException("An error"))
 
             val event = fetchCharacters.execute()
 
-            assertTrue(event is CharacterEvent.FetchError)
+            assert(event is Event.Error)
         }
 
         @Test

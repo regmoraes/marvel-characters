@@ -11,7 +11,8 @@ import kotlinx.android.synthetic.main.adapter_comic.view.*
 
 class ComicsAdapter : RecyclerView.Adapter<ComicsAdapter.ComicViewHolder>() {
 
-    private var comics = listOf<Comic>()
+    private var _comics = listOf<Comic>()
+    val comics get() = _comics
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComicViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -20,7 +21,7 @@ class ComicsAdapter : RecyclerView.Adapter<ComicsAdapter.ComicViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ComicViewHolder, position: Int) {
-        comics[position].apply {
+        _comics[position].apply {
 
             Picasso.get().load(thumbnail.pathWithExtension)
                 .into(holder.itemView.comicThumbnail)
@@ -29,10 +30,10 @@ class ComicsAdapter : RecyclerView.Adapter<ComicsAdapter.ComicViewHolder>() {
         }
     }
 
-    override fun getItemCount(): Int = comics.size
+    override fun getItemCount(): Int = _comics.size
 
     fun submitData(comics: List<Comic>) {
-        this.comics = comics
+        this._comics = comics
         notifyDataSetChanged()
     }
 

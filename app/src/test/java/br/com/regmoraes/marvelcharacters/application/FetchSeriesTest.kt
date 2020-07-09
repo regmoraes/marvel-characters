@@ -1,6 +1,6 @@
 package br.com.regmoraes.marvelcharacters.application
 
-import br.com.regmoraes.marvelcharacters.infrastructure.CharacterRepository
+import br.com.regmoraes.marvelcharacters.infrastructure.SeriesRepository
 import br.com.regmoraes.marvelcharacters.model.ModelStubs.characterOne
 import br.com.regmoraes.marvelcharacters.model.ModelStubs.seriesOne
 import br.com.regmoraes.marvelcharacters.model.ModelStubs.seriesTwo
@@ -8,7 +8,6 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.assertTrue
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class FetchSeriesTest {
@@ -18,12 +17,12 @@ internal class FetchSeriesTest {
     inner class FetchSeriesRequest {
 
         private lateinit var fetchSeries: FetchSeries
-        private lateinit var characterRepository: CharacterRepository
+        private lateinit var seriesRepository: SeriesRepository
 
         @BeforeEach
         fun setUp() {
-            characterRepository = mockk()
-            fetchSeries = FetchSeries(characterRepository)
+            seriesRepository = mockk()
+            fetchSeries = FetchSeries(seriesRepository)
         }
 
         @Test
@@ -31,25 +30,23 @@ internal class FetchSeriesTest {
 
             val series = listOf(seriesOne, seriesTwo)
 
-            coEvery { characterRepository.getSeries(any()) } returns CharacterEvent.SeriesFetched(
-                series
-            )
+            coEvery { seriesRepository.getSeries(any()) } returns Event.success(series)
 
             val event = fetchSeries.execute(characterOne.id)
 
-            assert(event is CharacterEvent.SeriesFetched && event.series.isNotEmpty())
+            assert(event is Event.Success && event.data.isNotEmpty())
         }
 
         @Test
         fun `When request has error Then it should return fetch error`() = runBlocking {
 
-            coEvery { characterRepository.getSeries(any()) } returns CharacterEvent.FetchError(
+            coEvery { seriesRepository.getSeries(any()) } returns Event.error(
                 IllegalStateException("An error")
             )
 
             val event = fetchSeries.execute(characterOne.id)
 
-            assertTrue(event is CharacterEvent.FetchError)
+            assert(event is Event.Error)
         }
     }
 }

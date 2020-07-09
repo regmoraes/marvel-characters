@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 
 class CoroutinesTestExtension(
-    private val dispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
+    val dispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
 ) : BeforeEachCallback, AfterEachCallback, TestCoroutineScope by TestCoroutineScope(dispatcher) {
 
     override fun beforeEach(context: ExtensionContext?) {

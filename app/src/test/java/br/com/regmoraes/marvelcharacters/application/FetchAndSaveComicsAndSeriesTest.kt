@@ -1,0 +1,3 @@
+package br.com.regmoraes.marvelcharacters.application
+
+internal class FetchAndSaveComicsAndSeriesTest

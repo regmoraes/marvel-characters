@@ -7,4 +7,6 @@
     <string name="series">Series</string>
     <string name="empty_favorites">You have no favorites</string>
     <string name="search">Search</string>
+    <string name="generic_network_error">Ocorreu um erro</string>
+    <string name="character_image_transition">characterImageTransition</string>
 </resources>

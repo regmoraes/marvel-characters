@@ -1,6 +1,6 @@
 package br.com.regmoraes.marvelcharacters.application
 
-import br.com.regmoraes.marvelcharacters.infrastructure.CharacterRepository
+import br.com.regmoraes.marvelcharacters.infrastructure.ComicRepository
 import br.com.regmoraes.marvelcharacters.model.ModelStubs.characterOne
 import br.com.regmoraes.marvelcharacters.model.ModelStubs.comicOne
 import br.com.regmoraes.marvelcharacters.model.ModelStubs.comicTwo
@@ -8,7 +8,6 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.assertTrue
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class FetchComicsTest {
@@ -18,12 +17,12 @@ internal class FetchComicsTest {
     inner class FetchComicsRequest {
 
         private lateinit var fetchComics: FetchComics
-        private lateinit var characterRepository: CharacterRepository
+        private lateinit var comicRepository: ComicRepository
 
         @BeforeEach
         fun setUp() {
-            characterRepository = mockk()
-            fetchComics = FetchComics(characterRepository)
+            comicRepository = mockk()
+            fetchComics = FetchComics(comicRepository)
         }
 
         @Test
@@ -31,25 +30,21 @@ internal class FetchComicsTest {
 
             val comics = listOf(comicOne, comicTwo)
 
-            coEvery { characterRepository.getComics(any()) } returns CharacterEvent.ComicsFetched(
-                comics
-            )
+            coEvery { comicRepository.getComics(any()) } returns Event.success(comics)
 
             val event = fetchComics.execute(characterOne.id)
 
-            assert(event is CharacterEvent.ComicsFetched && event.comics.isNotEmpty())
+            assert(event is Event.Success && event.data.isNotEmpty())
         }
 
         @Test
         fun `When request has error Then it should return fetch error`() = runBlocking {
 
-            coEvery { characterRepository.getComics(any()) } returns CharacterEvent.FetchError(
-                IllegalStateException("An error")
-            )
+            coEvery { comicRepository.getComics(any()) } returns Event.error(IllegalStateException("An error"))
 
             val event = fetchComics.execute(characterOne.id)
 
-            assertTrue(event is CharacterEvent.FetchError)
+            assert(event is Event.Error)
         }
     }
 }

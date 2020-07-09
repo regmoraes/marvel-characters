@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'de.mannodermaus.android-junit5'
+apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android {
     compileSdkVersion 29
@@ -22,7 +23,6 @@ android {
 
         buildConfigField "String", "PUBLIC_KEY", properties.get("public_key", "")
         buildConfigField "String", "PRIVATE_KEY", properties.get("private_key", "")
-
     }
 
     buildTypes {
@@ -39,6 +39,15 @@ android {
         test {
             java.srcDirs += "src/sharedTest/java"
         }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
     }
 }
 
@@ -57,6 +66,10 @@ dependencies {
     implementation "androidx.paging:paging-runtime:3.0.0-alpha02"
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    def nav_version = "2.3.0"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     def koin_version = '2.1.6'
     implementation "org.koin:koin-core:$koin_version"

@@ -1,7 +1,8 @@
 package br.com.regmoraes.marvelcharacters.infrastructure
 
-import br.com.regmoraes.marvelcharacters.application.CharacterEvent
-import br.com.regmoraes.marvelcharacters.application.FavoritesEvent
+import br.com.regmoraes.marvelcharacters.application.Event
+import br.com.regmoraes.marvelcharacters.application.FetchCharacters.Companion.DEFAULT_LIMIT
+import br.com.regmoraes.marvelcharacters.application.FetchCharacters.Companion.DEFAULT_OFFSET
 import br.com.regmoraes.marvelcharacters.infrastructure.api.CharacterRestService
 import br.com.regmoraes.marvelcharacters.infrastructure.api.RetrofitConfiguration
 import br.com.regmoraes.marvelcharacters.infrastructure.database.CharacterDao
@@ -17,8 +18,6 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CharacterRepositoryMediatorTest {
@@ -72,9 +71,7 @@ class CharacterRepositoryMediatorTest {
 
                 val event = characterRepositoryMediator.getCharacters(0, 20)
 
-                assertTrue(
-                    event is CharacterEvent.CharactersFetched && event.characters.isNotEmpty()
-                )
+                assert(event is Event.Success && event.data.isNotEmpty())
             }
 
         @Test
@@ -88,63 +85,10 @@ class CharacterRepositoryMediatorTest {
             webServerMock.enqueue(response)
 
             val event =
-                characterRepositoryMediator.getCharacters(0, 20)
+                characterRepositoryMediator.getCharacters(DEFAULT_OFFSET, DEFAULT_LIMIT)
 
-            assertTrue(event is CharacterEvent.FetchError)
+            assert(event is Event.Error)
         }
-    }
-
-    @Nested
-    @DisplayName("Given a Character")
-    inner class CharacterDetails {
-
-        private val character = characterOne
-
-        @Test
-        fun `When fetching character comics And response is successful Then it should return a comics fetched`() =
-            runBlocking {
-
-                val jsonBody =
-                    FileUtils.readTestResourceFile(
-                        "characters/api/comics-response.json"
-                    )
-
-                val response = MockResponse()
-                    .setResponseCode(200)
-                    .addHeader("Content-Type", "application/json; charset=utf-8")
-                    .addHeader("Cache-Control", "no-cache")
-                    .setBody(jsonBody)
-
-                webServerMock.enqueue(response)
-
-                val event = characterRepositoryMediator.getComics(character.id)
-
-                assertTrue(
-                    event is CharacterEvent.ComicsFetched && event.comics.isNotEmpty()
-                )
-            }
-
-        @Test
-        fun `When fetching character series And response is successful Then it should return series fetched`() =
-            runBlocking {
-
-                val jsonBody =
-                    FileUtils.readTestResourceFile(
-                        "characters/api/series-response.json"
-                    )
-
-                val response = MockResponse()
-                    .setResponseCode(200)
-                    .addHeader("Content-Type", "application/json; charset=utf-8")
-                    .addHeader("Cache-Control", "no-cache")
-                    .setBody(jsonBody)
-
-                webServerMock.enqueue(response)
-
-                val event = characterRepositoryMediator.getSeries(character.id)
-
-                assertTrue(event is CharacterEvent.SeriesFetched && event.series.isNotEmpty())
-            }
     }
 
     @Nested
@@ -160,7 +104,7 @@ class CharacterRepositoryMediatorTest {
 
                 val event = characterRepositoryMediator.insertFavorite(characterOne)
 
-                assertTrue(event is FavoritesEvent.FavoriteAdded && event.addedCharacter == characterOne)
+                assert(event is Event.Success && event.data)
             }
 
         @Test
@@ -171,7 +115,7 @@ class CharacterRepositoryMediatorTest {
 
             val event = characterRepositoryMediator.insertFavorite(characterOne)
 
-            assertTrue(event is FavoritesEvent.FavoriteError)
+            assert(event is Event.Error)
         }
     }
 
@@ -184,13 +128,16 @@ class CharacterRepositoryMediatorTest {
         fun `When requesting favorites Then it should return list of favorites characters`() =
             runBlocking {
 
-                val favorites = listOf(characterOne, characterTwo)
+                val favorites = listOf(
+                    characterOne.copy(isFavorite = true),
+                    characterTwo.copy(isFavorite = true)
+                )
                 val favoritesEntities = favorites.map { it.toEntity() }
 
                 every { characterDao.getAllFavorites() } returns flowOf(favoritesEntities)
 
-                characterRepositoryMediator.getFavorites().collect {
-                    assertEquals(favorites, it.favorites)
+                characterRepositoryMediator.getFavorites().collect { event ->
+                    assert(event is Event.Success && event.data == favorites)
                 }
             }
 
@@ -202,7 +149,7 @@ class CharacterRepositoryMediatorTest {
 
             val event = characterRepositoryMediator.removeFavorite(characterOne)
 
-            assertTrue(event is FavoritesEvent.FavoriteRemoved && event.removedCharacter == characterOne)
+            assert(event is Event.Success && event.data)
         }
     }
 }

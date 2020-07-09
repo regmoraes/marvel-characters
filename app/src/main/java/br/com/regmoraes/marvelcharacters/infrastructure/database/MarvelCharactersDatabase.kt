@@ -6,10 +6,16 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 
-@Database(entities = [CharacterEntity::class], version = 1, exportSchema = true)
+@Database(
+    entities = [CharacterEntity::class, ComicEntity::class, SeriesEntity::class],
+    version = 1,
+    exportSchema = true
+)
 abstract class MarvelCharactersDatabase : RoomDatabase() {
 
     abstract fun characterDao(): CharacterDao
+    abstract fun seriesDao(): SeriesDao
+    abstract fun comicsDao(): ComicsDao
 
     companion object {
         @Volatile

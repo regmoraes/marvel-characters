@@ -1,10 +1,8 @@
 package br.com.regmoraes.marvelcharacters.application
 
-import br.com.regmoraes.marvelcharacters.infrastructure.CharacterRepository
+import br.com.regmoraes.marvelcharacters.infrastructure.SeriesRepository
 
-class FetchSeries(private val characterRepository: CharacterRepository) {
+class FetchSeries(private val seriesRepository: SeriesRepository) {
 
-    suspend fun execute(
-        characterId: Long
-    ): CharacterEvent = characterRepository.getSeries(characterId)
+    fun execute(characterId: Long) = seriesRepository.getSeries(characterId)
 }

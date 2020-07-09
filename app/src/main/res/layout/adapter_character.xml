@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
+            android:transitionName="@string/character_image_transition"
             app:layout_constraintBottom_toTopOf="@+id/characterNameTextView"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintLeft_toLeftOf="parent"

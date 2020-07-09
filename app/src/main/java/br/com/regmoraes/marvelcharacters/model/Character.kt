@@ -9,8 +9,3 @@ data class Character(
     val resourceURI: String,
     val isFavorite: Boolean = false
 )
-
-fun Character.changeFavoriteStatus(): Character =
-    this.copy(isFavorite = !this.isFavorite)
-
-

@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        tools:text="There was a problem"
+        android:text="@string/empty_favorites"
         android:visibility="gone"
         tools:visibility="visible" />
 </FrameLayout>

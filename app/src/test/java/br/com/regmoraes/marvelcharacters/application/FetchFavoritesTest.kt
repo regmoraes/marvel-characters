@@ -1,5 +1,6 @@
 package br.com.regmoraes.marvelcharacters.application
 
+import br.com.regmoraes.marvelcharacters.application.Event.Companion.success
 import br.com.regmoraes.marvelcharacters.infrastructure.CharacterRepository
 import br.com.regmoraes.marvelcharacters.model.ModelStubs.characterOne
 import br.com.regmoraes.marvelcharacters.model.ModelStubs.characterTwo
@@ -31,14 +32,10 @@ internal class FetchFavoritesTest {
 
             val favorites = listOf(characterOne, characterTwo)
 
-            coEvery { characterRepository.getFavorites() } returns flowOf(
-                FavoritesEvent.FavoritesFetched(
-                    favorites
-                )
-            )
+            coEvery { characterRepository.getFavorites() } returns flowOf(success(favorites))
 
             fetchFavorites.execute().collect {
-                assert(it is FavoritesEvent.FavoritesFetched && it.favorites.isNotEmpty())
+                assert(it is Event.Success && it.data.isNotEmpty())
             }
         }
     }
