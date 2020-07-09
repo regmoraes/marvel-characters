@@ -1,18 +1,19 @@
 # Marvel Characters
 
-An app where users can interact with the Marvel Comics API to fetch characters data.
+An app where users can interact with the Marvel Comics API to fetch characters data and save them as favorites.
+
+<p float="left">
+<img width="40%" vspace="20" hspace="20" src="https://user-images.githubusercontent.com/4440882/87099178-80dd8f80-c21f-11ea-9997-c2f2efea61fc.gif" />
+<img width="40%" vspace="20" hspace="20" src="https://user-images.githubusercontent.com/4440882/87099411-07926c80-c220-11ea-8e09-72cf844e19e2.gif" />
 
 ## Features
 
-- The user should be able see a list of characters in alphabetical order  
-  - The list should be fetched as the users scrolls the list
-  - The list can be filtered once fetched
-- The user can search characters by name :construction:   
+- The user is able see a list of characters in alphabetical order  
+  - More characters are fetched as the users scrolls the list
 - Tapping on a character should show a detailed view of it 
-  - This view should also show a list of comics and series where the character appears   
+  - This view also shows a list of comics and series where the character appears   
 - The user can (un)favorite a character
   - The character basic info is persisted locally and can be viewed offline
-  - All comics and series are persisted :construction: 
   
 
 
@@ -44,16 +45,19 @@ The project was divided into four packages:
 
 The overall app architecture is as follows
 
-![Marvel Characters](https://user-images.githubusercontent.com/4440882/86497318-9fdbad80-bd57-11ea-9504-4648354c9e0c.png)
+![Marvel Characters](https://user-images.githubusercontent.com/4440882/87099948-758b6380-c221-11ea-90f9-d95320ccf14c.png)
+
 
 ### Notes
 
-1. The app is heavily based on application events, so every domain model from bottom layers is sent to top wrapped in a event class.
-2. Character model is used as an aggregate root and because of that, almost all repositories and use cases manipulates Character classes.
-4. Repository *always* exposes domain models.
-3. Due to a necessity to sync local favorites data with API provided characters, there's a dedicated FavoriteStatusSynchronizer that handles 
+1. The app returns data from bottom layer to upper layers wrapped in a `Event` Monad.
+2. Due to a necessity to sync local favorites data with API provided characters, there's a dedicated FavoriteStatusSynchronizer that handles 
 this synchronization in repository level.
-5. View DTOs were created to make it easier to send data between screens and avoid scoped instances and side-effects . 
+3. Parcelables were used to make it easier to send data between screens and avoid scoped instances.
+4. ViewModels were created with the intention to be associated with models instead of views 
+(i.e `FavoritesViewModel` manages favorites, `CharactersViewModel` manages `Character`s and so on).
+5. Instead of individual fields ViewModels sends `States` (which groups data) to Fragments so they 
+can process it and react accordingly. 
 
 ## Tests
 Tests were made using the Behavior-driven Development approach to ensure the use cases were working as expected.
