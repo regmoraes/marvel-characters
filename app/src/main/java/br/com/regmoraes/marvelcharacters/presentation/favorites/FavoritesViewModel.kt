@@ -48,7 +48,7 @@ class FavoritesViewModel(
             onSuccess = { _favoriteStatusChanged.value = FavoriteStatusChanged(it) },
             onError = { })
 
-        launch(dispatcher.main) {
+        launch(dispatcher.io) {
             if (comics == null || series == null) {
                 fetchAndSaveComicsAndSeries.execute(character)
             } else {
