@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.regmoraes.marvelcharacters.application.Event.Companion.handle
 import br.com.regmoraes.marvelcharacters.application.FetchCharacters
+import br.com.regmoraes.marvelcharacters.application.FetchCharacters.Companion.DEFAULT_LIMIT
+import br.com.regmoraes.marvelcharacters.application.FetchCharacters.Companion.DEFAULT_OFFSET
 import br.com.regmoraes.marvelcharacters.model.Character
 import br.com.regmoraes.marvelcharacters.presentation.CoroutineContextProvider
 import kotlinx.coroutines.launch
@@ -20,7 +22,7 @@ class CharactersViewModel(
     val charactersState: LiveData<CharactersState> = _charactersState
 
     init {
-        fetchCharacters.execute()
+        fetchCharacters(DEFAULT_OFFSET, DEFAULT_LIMIT)
     }
 
     fun fetchCharacters(offset: Int, limit: Int) = viewModelScope.launch(dispatcher.main) {

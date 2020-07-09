@@ -63,12 +63,8 @@ class CharactersViewModelTest {
 
                 val eventsObserver = charactersViewModel.charactersState.testObserver()
 
-                val expectedEvents = listOf(
-                    CharactersViewModel.CharactersState(fetching = true),
-                    CharactersViewModel.CharactersState(characters = characters)
-                )
-
-                charactersViewModel.fetchCharacters(DEFAULT_OFFSET, DEFAULT_LIMIT)
+                val expectedEvents =
+                    listOf(CharactersViewModel.CharactersState(characters = characters))
 
                 assertEquals(expectedEvents, eventsObserver.observedValues)
             }
@@ -89,12 +85,8 @@ class CharactersViewModelTest {
 
                 val eventsObserver = charactersViewModel.charactersState.testObserver()
 
-                val expectedEvents = listOf(
-                    CharactersViewModel.CharactersState(fetching = true),
-                    CharactersViewModel.CharactersState(networkError = true)
-                )
-
-                charactersViewModel.fetchCharacters(DEFAULT_OFFSET, DEFAULT_LIMIT)
+                val expectedEvents =
+                    listOf(CharactersViewModel.CharactersState(networkError = true))
 
                 assertEquals(expectedEvents, eventsObserver.observedValues)
             }
